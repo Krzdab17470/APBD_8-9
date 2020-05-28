@@ -4,6 +4,8 @@ using System.Linq;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
+using Microsoft.Extensions.Caching.Memory;
+using System.ComponentModel.DataAnnotations;
 
 namespace LinqConsoleApp
 {
@@ -328,26 +330,48 @@ namespace LinqConsoleApp
         /// SELECT TOP 1 * FROM Emp WHERE Job="Frontend programmer"
         /// ORDER BY HireDate DESC;
         /// </summary>
-        public void Przyklad9()
+        public void Przyklad9() //OK
         {
             var res9 = Emps
-                       .
+                       .Where(emp => emp.Job == "Frontend programmer")
+                       .OrderByDescending(emp => emp.HireDate)
+                       .Select(emp => new
+                       {
+                           emp.Ename,
+                           emp.HireDate,
+                           emp.Job
+                       }).First();
+
+            Console.WriteLine("Przyklad9");
         }
 
         /// <summary>
         /// SELECT Ename, Job, Hiredate FROM Emps
         /// UNION
-        /// SELECT "Brak wartości", null, null;
+        /// SELECT "Brak wartości", null, null
         /// </summary>
         public void Przyklad10Button_Click()
         {
+           
+           // var res101 = Emps
+           //             .Select(emp => new {emp.Ename, emp.Job, emp.HireDate })
+            //            .Union(Emps.Select( emp => new { emp.Ename }));
 
+            Console.WriteLine("Przyklad10");
         }
 
         //Znajdź pracownika z najwyższą pensją wykorzystując metodę Aggregate()
         public void Przyklad11()
         {
+            var res11 = Emps
+                        .Select(emp => emp.Salary)
+                        .Aggregate(
+                            seed: 0,
+                            func: (result, item) => result + item,
+                            resultSelector: result => if(
+                        );
 
+            Console.WriteLine("Przyklad11");
         }
 
         //Z pomocą języka LINQ i metody SelectMany wykonaj złączenie
