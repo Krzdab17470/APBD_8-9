@@ -192,7 +192,7 @@ namespace LinqConsoleApp
         /// <summary>
         /// SELECT * FROM Emps WHERE Job = "Backend programmer";
         /// </summary>
-        public void Przyklad1()
+        public void Przyklad1() //OK
         {
             //var res = new List<Emp>();
             //foreach(var emp in Emps)
@@ -209,7 +209,7 @@ namespace LinqConsoleApp
                           Zawod = emp.Job
                       };
 
-            Console.WriteLine(res.ToList());
+            Console.WriteLine("Przyklad1");
 
             //2. Lambda and Extension methods
         }
@@ -217,33 +217,60 @@ namespace LinqConsoleApp
         /// <summary>
         /// SELECT * FROM Emps Job = "Frontend programmer" AND Salary>1000 ORDER BY Ename DESC;
         /// </summary>
-        public void Przyklad2()
+        public void Przyklad2() //OK
         {
-            
+            var res2 = Emps
+                         .Where((emp, indx) => emp.Job == "Frontend programmer" && emp.Salary > 1000)
+                         .OrderByDescending(emp => emp.Ename)
+                         .Select(emp => new
+                         {
+                             emp.Ename,
+                             emp.Salary
+                         });
+
+            Console.WriteLine("Przyklad2");
 
         }
 
         /// <summary>
         /// SELECT MAX(Salary) FROM Emps;
         /// </summary>
-        public void Przyklad3()
+        public void Przyklad3() //OK
         {
-          
+            var max = Emps.Max(emp => emp.Salary);
+
+            Console.WriteLine("Przyklad3");
         }
 
         /// <summary>
         /// SELECT * FROM Emps WHERE Salary=(SELECT MAX(Salary) FROM Emps);
         /// </summary>
-        public void Przyklad4()
+        public void Przyklad4() //OK
         {
+            var max = Emps
+                .Where(emp => emp.Salary == Emps.Max(emp => emp.Salary))
+                .Select(emp => new
+                {
+                    emp.Ename,
+                    emp.Salary
+                });
 
+            Console.WriteLine("Przyklad4");
         }
 
         /// <summary>
         /// SELECT ename AS Nazwisko, job AS Praca FROM Emps;
         /// </summary>
-        public void Przyklad5()
+        public void Przyklad5() //OK
         {
+            var res5 = Emps
+                        .Select(emp => new
+                        {
+                           Nazwisko = emp.Ename,
+                            Praca = emp.Job
+                        });
+
+            Console.WriteLine("Przyklad5");
 
         }
 
@@ -252,26 +279,49 @@ namespace LinqConsoleApp
         /// INNER JOIN Depts ON Emps.Deptno=Depts.Deptno
         /// Rezultat: Złączenie kolekcji Emps i Depts.
         /// </summary>
-        public void Przyklad6()
+        public void Przyklad6() //OK
         {
+            var res6 = Emps
+                       .Join(Depts, Emp => Emp.Deptno, dept => dept.Deptno, (emp, dept)
+                         => new
+                         {
+                             emp.Ename,
+                             dept.Dname
+                         });
+
+            Console.WriteLine("Przyklad6");
 
         }
 
         /// <summary>
         /// SELECT Job AS Praca, COUNT(1) LiczbaPracownikow FROM Emps GROUP BY Job;
         /// </summary>
-        public void Przyklad7()
+        public void Przyklad7() //OK
         {
+           // var res7 = Emps.GroupBy(emp => emp.Deptno).Count();
 
+            var res71 =
+            from emp in Emps
+            group emp by emp.Job into JobGroup
+            select new
+            {
+                Praca = JobGroup.Key,
+                Count = JobGroup.Count(),
+            };
+
+
+            Console.WriteLine("Przyklad7");
         }
 
         /// <summary>
         /// Zwróć wartość "true" jeśli choć jeden
         /// z elementów kolekcji pracuje jako "Backend programmer".
         /// </summary>
-        public void Przyklad8()
+        public void Przyklad8() //OK
         {
+            var p1 = Emps.Any(emp => emp.Job == "Backend programmer");
 
+            Console.WriteLine("Przyklad8");
         }
 
         /// <summary>
@@ -280,7 +330,8 @@ namespace LinqConsoleApp
         /// </summary>
         public void Przyklad9()
         {
-
+            var res9 = Emps
+                       .
         }
 
         /// <summary>
